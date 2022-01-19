@@ -73,13 +73,13 @@ jobs:
         framework: terraform
         container_user: 1000
         output_format: sarif
-        soft_fail: true
+        soft_fail: false
     
     # Add a comment to pull requests with plan results
     - name: add-plan-comment
       id: comment
       uses: actions/github-script@v3
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && (success() || failure())
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
       with:

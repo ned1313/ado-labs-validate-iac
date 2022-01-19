@@ -89,7 +89,7 @@ jobs:
           #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
           #### Terraform Validation 🤖${{ steps.validate.outputs.stdout }}
           #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-          #### Checkov Results 🧪\`${{ steps.checkov.results }}\`
+          #### Checkov Results 🧪\`${{ steps.checkov.outputs.results }}\`
       
           <details><summary>Show Plan</summary>
           

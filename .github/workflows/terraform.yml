@@ -82,7 +82,7 @@ jobs:
       if: github.event_name == 'pull_request' && (success() || failure())
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-        CHECKOV: "checkov\n${{ steps.checkov.outputs.results}}"
+        CHECKOV: "checkov\n${{ steps.checkov.outputs.results }}"
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |

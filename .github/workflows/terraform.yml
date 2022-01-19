@@ -99,7 +99,7 @@ jobs:
 
           <details><summary>Show Checkov Results</summary>
 
-          \`\`\`${{ steps.checkov.outputs.results }}\`\`\`
+          \`\`\`${{ steps.checkov.outputs }}\`\`\`
 
           </details>
           

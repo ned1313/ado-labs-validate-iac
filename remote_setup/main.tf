@@ -20,12 +20,12 @@ data "azuread_client_config" "current" {}
 
 resource "azuread_application" "gh_actions" {
   display_name = local.service_principal_name
-  owners = [ data.azuread_client_config.current.object_id ]
+  owners       = [data.azuread_client_config.current.object_id]
 }
 
 resource "azuread_service_principal" "gh_actions" {
   application_id = azuread_application.gh_actions.application_id
-  owners = [ data.azuread_client_config.current.object_id ]
+  owners         = [data.azuread_client_config.current.object_id]
 }
 
 resource "azuread_service_principal_password" "gh_actions" {
@@ -76,6 +76,7 @@ resource "github_actions_secret" "actions_secret" {
     ARM_CLIENT_SECRET   = azuread_service_principal_password.gh_actions.value
     ARM_SUBSCRIPTION_ID = data.azurerm_subscription.current.subscription_id
     ARM_TENANT_ID       = data.azuread_client_config.current.tenant_id
+    TERRAFORM_VERSION   = var.terraform_version
   }
 
   repository      = var.github_repository

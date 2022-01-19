@@ -4,9 +4,9 @@
 
 
 locals {
-  resource_group_name = "${var.naming_prefix}-${random_integer.name_suffix.result}"
+  resource_group_name   = "${var.naming_prefix}-${random_integer.name_suffix.result}"
   app_service_plan_name = "${var.naming_prefix}-${random_integer.name_suffix.result}"
-  app_service_name = "${var.naming_prefix}-${random_integer.name_suffix.result}"
+  app_service_name      = "${var.naming_prefix}-${random_integer.name_suffix.result}"
 }
 
 resource "random_integer" "name_suffix" {
@@ -29,8 +29,8 @@ resource "azurerm_app_service_plan" "app_service" {
   resource_group_name = azurerm_resource_group.app_service.name
 
   sku {
-    tier = var.asp_tier
-    size = var.asp_size
+    tier     = var.asp_tier
+    size     = var.asp_size
     capacity = var.capacity
   }
 }
@@ -40,11 +40,12 @@ resource "azurerm_app_service" "app_service" {
   location            = azurerm_resource_group.app_service.location
   resource_group_name = azurerm_resource_group.app_service.name
   app_service_plan_id = azurerm_app_service_plan.app_service.id
-  
+  https_only          = true
+
   source_control {
-    repo_url = "https://github.com/ned1313/nodejs-docs-hello-world"
-    branch = "main"
+    repo_url           = "https://github.com/ned1313/nodejs-docs-hello-world"
+    branch             = "main"
     manual_integration = true
-    use_mercurial = false
+    use_mercurial      = false
   }
 }

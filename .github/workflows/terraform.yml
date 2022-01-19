@@ -26,7 +26,7 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
-        terraform_version: 1.0.10
+        terraform_version: ${{ secrets.TERRAFORM_VERSION }}
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
@@ -41,6 +41,17 @@ jobs:
         CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
       run: terraform init -backend-config="storage_account_name=$STORAGE_ACCOUNT" -backend-config="container_name=$CONTAINER_NAME" -backend-config="resource_group_name=$RESOURCE_GROUP"
 
+    # Run a terraform fmt for push on non-main branch
+    - name: Terraform Format
+      id: fmt
+      if: github.ref != 'refs/heads/main'
+      run: terraform fmt -check
+
+    # Run a terraform validate for push on non-main branch
+    - name: Terraform Validate
+      id: validate
+      if: github.ref != 'refs/heads/main'
+      run: terraform validate -no-color
 
     # Run a terraform plan for pull requests only
     - name: Terraform Plan
@@ -52,12 +63,24 @@ jobs:
         ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       if: github.event_name == 'pull_request'
       run: terraform plan -no-color
+
+    - name: Checkov
+      if: github.event_name == 'pull_request'
+      id: checkov
+      uses: bridgecrewio/checkov-action@master
+      with:
+        quiet: true
+        framework: terraform
+        container_user: 1000
+        output_format: github_failed_only
+        soft_fail: false
+        skip_check: CKV_AZURE_88,CKV_AZURE_71,CKV_AZURE_16,CKV_AZURE_80,CKV_AZURE_63,CKV_AZURE_18,CKV_AZURE_65,CKV_AZURE_17,CKV_AZURE_13,CKV_AZURE_78,CKV_AZURE_66,CKV_AZURE_44,CKV_AZURE_35,CKV_AZURE_43,CKV_AZURE_33,CKV_AZURE_3,CKV2_AZURE_1,CKV2_AZURE_18,CKV2_AZURE_8,CKV2_AZURE_21
     
     # Add a comment to pull requests with plan results
     - name: add-plan-comment
       id: comment
       uses: actions/github-script@v3
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && (success() || failure())
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
       with:
@@ -67,11 +90,18 @@ jobs:
           #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
           #### Terraform Validation 🤖${{ steps.validate.outputs.stdout }}
           #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+          #### Checkov 🧪\`${{ steps.checkov.outcome }}\`
       
           <details><summary>Show Plan</summary>
           
           \`\`\`${process.env.PLAN}\`\`\`
           
+          </details>
+
+          <details><summary>Show Checkov Results</summary>
+
+          ${process.env.CHECKOV_RESULTS}
+
           </details>
           
           *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;

@@ -2,15 +2,15 @@
 # TERRAFORM CONFIG
 ##################################################################################
 terraform {
-    required_providers {
-        azurerm = {
-            source = "hashicorp/azurerm"
-            version = "~> 2.0"
-        }
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 2.0"
     }
-    backend "azurerm" {
-        key = "app.terraform.tfstate"
-    }
+  }
+  backend "azurerm" {
+    key = "app.terraform.tfstate"
+  }
 }
 
 

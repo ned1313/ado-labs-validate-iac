@@ -26,7 +26,7 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
-        terraform_version: 1.0.10
+        terraform_version: ${{ secrets.TERRAFORM_VERSION }}
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
@@ -41,6 +41,17 @@ jobs:
         CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
       run: terraform init -backend-config="storage_account_name=$STORAGE_ACCOUNT" -backend-config="container_name=$CONTAINER_NAME" -backend-config="resource_group_name=$RESOURCE_GROUP"
 
+    # Run a terraform fmt for push on non-main branch
+    - name: Terraform Format
+      id: fmt
+      if: github.ref != 'refs/heads/main' && github.event_name == 'push'
+      run: terraform fmt -check
+
+    # Run a terraform validate for push on non-main branch
+    - name: Terraform Validate
+      id: validate
+      if: github.ref != 'refs/heads/main' && github.event_name == 'push'
+      run: terraform validate -no-color
 
     # Run a terraform plan for pull requests only
     - name: Terraform Plan

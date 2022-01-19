@@ -72,7 +72,7 @@ jobs:
         quiet: true
         framework: terraform
         container_user: 1000
-        output_format: sarif
+        output_format: json
         soft_fail: false
     
     # Add a comment to pull requests with plan results
@@ -82,7 +82,7 @@ jobs:
       if: github.event_name == 'pull_request' && (success() || failure())
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-        CHECKOV: "checkov\n${{ steps.checkov.outputs.results }}"
+        CHECKOV: "json\n${{ steps.checkov.outputs.results }}"
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |

@@ -72,7 +72,7 @@ jobs:
         quiet: true
         framework: terraform
         container_user: 1000
-        output_format: serif
+        output_format: sarif
     
     # Add a comment to pull requests with plan results
     - name: add-plan-comment

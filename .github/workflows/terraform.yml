@@ -73,6 +73,7 @@ jobs:
         framework: terraform
         container_user: 1000
         output_format: sarif
+        soft_fail: true
     
     # Add a comment to pull requests with plan results
     - name: add-plan-comment

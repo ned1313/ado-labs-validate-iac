@@ -99,7 +99,7 @@ jobs:
 
           <details><summary>Show Checkov Results</summary>
 
-          \`\`\`${process.env.CHECKOV_RESULTS}\`\`\`
+          ${process.env.CHECKOV_RESULTS}
 
           </details>
           

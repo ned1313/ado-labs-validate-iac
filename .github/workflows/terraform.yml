@@ -44,13 +44,13 @@ jobs:
     # Run a terraform fmt for push on non-main branch
     - name: Terraform Format
       id: fmt
-      if: github.ref != 'refs/heads/main'
+      if: github.ref != 'refs/heads/main' && github.event_name == 'push' 
       run: terraform fmt -check
 
     # Run a terraform validate for push on non-main branch
     - name: Terraform Validate
       id: validate
-      if: github.ref != 'refs/heads/main'
+      if: github.ref != 'refs/heads/main' && github.event_name == 'push'
       run: terraform validate -no-color
 
     # Run a terraform plan for pull requests only
@@ -64,6 +64,7 @@ jobs:
       if: github.event_name == 'pull_request'
       run: terraform plan -no-color
 
+    # Run Checkov against configuration
     - name: Checkov
       if: github.event_name == 'pull_request'
       id: checkov

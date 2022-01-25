@@ -41,16 +41,17 @@ jobs:
         CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
       run: terraform init -backend-config="storage_account_name=$STORAGE_ACCOUNT" -backend-config="container_name=$CONTAINER_NAME" -backend-config="resource_group_name=$RESOURCE_GROUP"
 
-    # Run a terraform fmt for push on non-main branch
+    # Run a terraform fmt for push and PR on non-main branch
     - name: Terraform Format
       id: fmt
-      if: github.ref != 'refs/heads/main' && github.event_name == 'push' 
+      if: github.ref != 'refs/heads/main'
       run: terraform fmt -check
 
-    # Run a terraform validate for push on non-main branch
+    # Run a terraform validate for push and PR on non-main branch
+    # Run even if formatting fails
     - name: Terraform Validate
       id: validate
-      if: github.ref != 'refs/heads/main' && github.event_name == 'push'
+      if: github.ref != 'refs/heads/main' && (success() || failure())
       run: terraform validate -no-color
 
     # Run a terraform plan for pull requests only

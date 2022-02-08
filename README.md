@@ -54,14 +54,18 @@ terraform apply -auto-approve # Because we live on the edge!
 
 At this point your GitHub repository is all set for you to kick off a GitHub Action. Actions are triggered by any `push` or `pull_request` event that happens in the repo. Pushing an updated version from your local desktop should trigger it. The Action will do the following:
 
-* All events
+* Push on non-main branch
   * Pull the repo to the runner
   * Install Terraform
   * Initialize Terraform with remote state
+  * Check formatting with `terraform fmt`
+  * Check syntax with `terraform validate`
 
 * Pull Requests
-  * Generate a plan of the changes
-  * Add the results of the plan to the pull request as a comment
+  * Check formatting and syntax again
+  * Generate a plan of the changes with `terraform plan`
+  * Perform static code analysis with Checkov
+  * Add the results of the plan and code anlysis to the pull request as a comment
 
 * Push on main branch (AKA a merge)
   * Run a Terraform apply with `-auto-approve` to update the target environment

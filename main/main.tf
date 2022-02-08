@@ -27,6 +27,7 @@ resource "azurerm_app_service_plan" "app_service" {
   name                = local.app_service_plan_name
   location            = azurerm_resource_group.app_service.location
   resource_group_name = azurerm_resource_group.app_service.name
+  #resource_group_name = azurerm_resource_group.app_service.bad_attribute
 
   sku {
     tier     = var.asp_tier

@@ -1,6 +1,7 @@
 # Start with these values
 asp_tier = "Standard"
 asp_size = "S1"
+naming_prefix = "ghm"
 
 #Change to these values
 #asp_tier = "PremiumV2"

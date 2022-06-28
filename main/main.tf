@@ -30,7 +30,7 @@ resource "azurerm_app_service_plan" "app_service" {
   #resource_group_name = azurerm_resource_group.app_service.bad_attribute
 
   sku {
-    tier     = var.asp_tier
+    tier     =                   var.asp_tier
     size     = var.asp_size
     capacity = var.capacity
   }
